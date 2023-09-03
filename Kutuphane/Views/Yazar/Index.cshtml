@@ -1,0 +1,176 @@
+﻿
+@section Styles{
+    <link href="//cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
+}
+<a id="btnEkle" class="btn btn-primary">EKLE</a>
+
+<table id="tblYazarlar" class="table table-striped">
+ 
+</table>
+
+
+
+<div class="modal fade" id="modalEkle" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitleId">Yazar Ekleme Formu</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="txtYazarAd" class="form-control frmInput" placeholder="Lütfen yazarın adını giriniz" /><br />
+                <input type="text" id="txtYazarOzgecmis" class="form-control frmInput" placeholder="Lütfen yazarın özgeçmişini giriniz" /><br />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">İptal</button>
+                <a id="btnKaydet" class="btn btn-primary">Kaydet</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+@section Scripts{
+    <script src="//cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+    <script>
+        var DataTable;
+
+        $(document).ready(function () {
+
+            $("#btnEkle").click(function () {
+                $(".frmInput").val('');
+                $("#modalEkle").modal('show');
+                $("#btnKaydet").one('click',function () {
+
+                    let gonderilecekOlanVeri = {
+                        ad: $("#txtYazarAd").val(),
+                        ozgecmis: $("#txtYazarOzgecmis").val()
+                    }
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '/Yazar/Upsert',
+                        data: gonderilecekOlanVeri,
+                        success: function () {
+                            $('#modalEkle').modal('hide');
+
+
+
+                            toastr.success("Kayıt başarıyla eklenmiştir", "BAŞARILI !");
+                            DataTable.ajax.reload();
+
+
+
+                        }
+                    });
+
+
+
+                })
+
+            });
+
+     
+
+           DataTable = $("#tblYazarlar").DataTable({
+                ajax: "/Yazar/GetAll",
+
+                columns: [
+                    { data: "id", title: "ID" },
+                    { data: "ad", title: "Yazar Adı" },
+                    { data: "ozgecmis", title: "Özgeçmiş" },
+                    {
+                        data: "id", title: "İşlemler", render: function (data, type, row) {
+
+                            return `<a onclick="yazarSil(${data})"  class="btn btn-danger">Sil</a>  
+                            <a onclick="yazarDuzenle(${data},'${row.ad}','${row.ozgecmis}')" class="btn btn-info">Düzenle</a>`
+                        }
+                    }
+                ]
+
+
+            });
+
+        })
+        function yazarDuzenle(id,ad,ozgecmis) {
+            $("#modalEkle").modal('show');
+            $("#txtYazarAd").val(ad);
+            $("#txtYazarOzgecmis").val(ozgecmis);
+
+            $("#btnKaydet").one('click',function () {
+                let gonderilecekOlanVeri = {
+                    ad: $("#txtYazarAd").val(),
+                    ozgecmis: $("#txtYazarOzgecmis").val(),
+                    id:id
+                }
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/Yazar/Upsert',
+                    data: gonderilecekOlanVeri,
+                    success: function () {
+                        $('#modalEkle').modal('hide');
+
+
+
+                        toastr.success("Kayıt başarıyla DÜZENLENMİŞTİR", "BAŞARILI !");
+                        DataTable.ajax.reload();
+
+
+
+                    }
+                });
+            })
+
+
+        }
+
+      
+
+        function yazarSil(id) {
+
+            Swal.fire({
+                title: 'Silmek istediğiniz emin misiniz ??',
+                showCancelButton: true,
+                confirmButtonText: 'Evet',
+                cancelButtonText: 'Hayır'
+
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+
+                    $.ajax({
+                        type: 'GET',
+                        url: '/Yazar/Delete',
+                        data: {
+                            id: id
+                        },
+                        success: function (res) {
+                          
+                            toastr.success("Silme işlemi başarılı", "BAŞARILI !")
+                            DataTable.ajax.reload();
+
+                        }
+                    });
+
+
+
+                }
+            })
+
+
+          
+        }
+
+     
+      
+
+
+    </script>
+}
+

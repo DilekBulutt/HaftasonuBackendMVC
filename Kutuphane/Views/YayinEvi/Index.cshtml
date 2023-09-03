@@ -1,0 +1,103 @@
+﻿<a asp-controller="YayinEvi" asp-action="Add" class="btn btn-primary">EKLE</a>
+<a onclick="yayinEvleriniGetir()" class="btn btn-danger">Verileri Getir</a>
+
+<table  class="table table-striped">
+    <thead>
+        <tr>
+            <th>Yayın Evi Adı</th>
+            <th>Adres</th>
+            <th>Telefon</th>
+            <th>İşlemler</th>
+
+        </tr>
+    </thead>
+    <tbody id="tblYayinEvleri">
+
+      
+      
+       
+    </tbody>
+
+
+</table>
+
+@section Scripts{
+
+    <script>
+
+    function yayinEvleriniGetir()
+    {
+        $.ajax({
+            type: "GET",
+            url: "/YayinEvi/GetAll",
+            success: function (res) {
+
+                $("#tblYayinEvleri").empty();
+
+                for (var item of res) {
+                    $("#tblYayinEvleri").append(`
+                        <tr id="trYayinEvi-${item.id}">
+                            <td>${item.ad}</td>
+                                    <td>${item.adres}</td>
+                                    <td>${item.tel}</td>
+                                    <td><a onclick="yayinEviSil(${item.id})"  class="btn btn-danger">Sil</a> | <a asp-action="Update" asp-route-id="" asp-controller="YayinEvi" class="btn btn-success">Düzenle</a></td>
+                        </tr>`)
+                }
+
+            }
+        });
+
+
+    }
+
+        function yayinEviSil(disaridanGelenId) {
+
+            Swal.fire({
+                title: 'Silmek istediğiniz emin misiniz ??',
+                showCancelButton: true,
+                confirmButtonText: 'Evet',
+                cancelButtonText:'Hayır'
+              
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '/YayinEvi/DeleteAjax',
+                        data: {
+                            id: disaridanGelenId
+                        },
+                        success: function (res) {
+                            $("#trYayinEvi-" + disaridanGelenId).remove();
+                          
+                            toastr.success("Silme işlemi başarılı","BAŞARILI !")
+
+                        }
+                    });
+
+
+
+                } 
+            })
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+          
+            
+
+           
+        
+        }
+
+
+    </script>
+
+}

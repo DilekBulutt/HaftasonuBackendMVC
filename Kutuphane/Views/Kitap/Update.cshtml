@@ -1,0 +1,19 @@
+﻿@model Kitap
+@{
+    var yazarlar = ViewData["Yazarlar"] as List<Yazar>;
+    var yayinEvleri = ViewData["YayinEvleri"] as List<YayinEvi>;
+}
+
+<form method="post">
+
+    <input asp-for="Ad" value="@Model.Ad" placeholder="Kitabın Adını Giriniz" class="form-control" />
+    <input asp-for="ISBN" value="@Model.ISBN" placeholder="Kitabın ISBNi Giriniz" class="form-control" />
+
+    <select asp-for="Yazarlar" asp-items="@(new SelectList(yazarlar,"Id","Ad",Model.Yazarlar))" multiple="multiple" class="form-control"></select>
+
+    <select asp-for="YayinEvleri" asp-items="@(new SelectList(yayinEvleri,"Id","Ad"))" multiple="multiple" class="form-control"></select>
+
+
+    <button class="btn btn-primary" type="submit">Kaydet</button>
+
+</form>

@@ -1,0 +1,9 @@
+﻿@model YayinEvi
+<form method="post">
+    <input asp-for="Ad" class="form-control" value="@Model.Ad" placeholder="Lütfen yayınevi adını giriniz" /><br />
+    <input asp-for="Adres" class="form-control" value="@Model.Adres" placeholder="Lütfen yayınevi adresi giriniz" /><br />
+    <input asp-for="Tel" class="form-control" value="@Model.Tel" placeholder="Lütfen yayınevi telefonu giriniz" /><br />
+
+    <button class="btn btn-primary" type="submit">Güncelle</button>
+
+</form>

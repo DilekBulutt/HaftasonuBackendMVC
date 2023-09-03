@@ -1,0 +1,23 @@
+﻿@model Yazar
+
+
+@if (Model != null)
+{
+    <form method="post">
+        <input asp-for="Ad" class="form-control" placeholder="Lütfen yazarın adını giriniz" value="@Model.Ad" /><br />
+        <input asp-for="Ozgecmis" class="form-control" placeholder="Lütfen yazarın özgeçmişini giriniz"  value="@Model.Ozgecmis" /><br />
+
+        <button class="btn btn-success" type="submit">Güncelle</button>
+
+    </form>
+}
+else
+{
+    <form method="post">
+        <input asp-for="Ad" class="form-control" placeholder="Lütfen yazarın adını giriniz" /><br />
+        <input asp-for="Ozgecmis" class="form-control" placeholder="Lütfen yazarın özgeçmişini giriniz" /><br />
+
+        <button class="btn btn-primary" type="submit">EKLE</button>
+
+    </form>
+}
